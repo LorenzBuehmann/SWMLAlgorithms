@@ -83,4 +83,5 @@ public class Parameters {
 	public static String refinementOperator;
 	public static boolean CCP;
 	public static boolean mutagenicAsDataPropertyPrediction;
+	public static String conceptSeed;
 }

@@ -164,7 +164,7 @@ public class DSTTDTClassifier{
 					if (!Parameters.nonspecificityControl){
 						
 								
-							ArrayList<OWLDescription> generateNewConcepts = op.generateNewConcepts(Parameters.beam, posExs, negExs); // genera i concetti sulla base degli esempi
+							ArrayList<OWLDescription> generateNewConcepts = op.generateNewConcepts(Parameters.beam, posExs, negExs, false); // genera i concetti sulla base degli esempi
 							OWLDescription[] cConcepts = new OWLDescription[generateNewConcepts.size()];
 							
 							cConcepts= generateNewConcepts.toArray(cConcepts);
@@ -213,7 +213,7 @@ public class DSTTDTClassifier{
 
 
 					}
-					else if(mass.getNonSpecificity()<0.1){
+					else if(mass.getNonSpecificityMeasureValue()<0.1){
 						OWLDescription[] cConcepts = generateNewConcepts(Parameters.beam, posExs, negExs); // genera i concetti sulla base degli esempi
 						//	OWLDescription[] cConcepts = allConcepts;
 
@@ -435,7 +435,7 @@ public class DSTTDTClassifier{
 			others[i-1]=next;
 		}
 		if(others.length>=1){
-			bba=bba.applicaCombinazione(others);
+			bba=bba.combineEvidences(others);
 
 		}
 		return bba;
@@ -446,7 +446,7 @@ public class DSTTDTClassifier{
 
 
 	/**
-	 * Implements the startegy to choose the class label
+	 * Implementation of forcing criterion for the final class assignement 
 	 * @param results
 	 * @param c
 	 * @param bba
@@ -454,17 +454,17 @@ public class DSTTDTClassifier{
 	private void predict(int[] results, int c, MassFunction<Integer> bba) {
 		ArrayList<Integer> ipotesi= new ArrayList<Integer>();
 		ipotesi.add(+1);
-		double confirmationFunctionValuePos = bba.calcolaConfirmationFunction(ipotesi);
+		double confirmationFunctionValuePos = bba.getConfirmationFunctionValue(ipotesi);
 		//			double confirmationFunctionValuePos = bba.calcolaBeliefFunction(ipotesi);
 		// not concept
 		ArrayList<Integer> ipotesi2= new ArrayList<Integer>();
 		ipotesi2.add(-1);
-		double confirmationFunctionValueNeg = bba.calcolaConfirmationFunction(ipotesi2);
+		double confirmationFunctionValueNeg = bba.getConfirmationFunctionValue(ipotesi2);
 		//			double confirmationFunctionValueNeg = bba.calcolaBeliefFunction(ipotesi2);
 		ArrayList<Integer> ipotesi3= new ArrayList<Integer>();
 		ipotesi3.add(-1);
 		ipotesi3.add(+1);
-		double confirmationFunctionValueUnc = bba.calcolaConfirmationFunction(ipotesi3);
+		double confirmationFunctionValueUnc = bba.getConfirmationFunctionValue(ipotesi3);
 		//			double confirmationFunctionValueUnc = bba.calcolaBeliefFunction(ipotesi3);
 
 		System.out.println(confirmationFunctionValuePos+ " vs. "+ confirmationFunctionValueNeg+ "vs." +confirmationFunctionValueUnc);
@@ -510,7 +510,7 @@ public class DSTTDTClassifier{
 		System.out.println("Split: "+posExs2 +"---"+negExs2+"--"+undExs2);
 		MassFunction<Integer> bestBba = getBBA(posExs2,negExs2,undExs2);
 
-		double bestNonSpecificity = bestBba.getNonSpecificity();
+		double bestNonSpecificity = bestBba.getNonSpecificityMeasureValue();
 		bestBba.getConfusionMeasure();
 		System.out.printf("%+10e\n",bestNonSpecificity);
 
@@ -522,7 +522,7 @@ public class DSTTDTClassifier{
 			System.out.printf("%4s\t p:%d n:%d u:%d\t p:%d n:%d u:%d\t p:%d n:%d u:%d\t ", 
 					"#"+c, counts[0], counts[1], counts[2], counts[3], counts[4], counts[5], counts[6], counts[7], counts[8]);
 			MassFunction<Integer> thisbba = getBBA(counts[0] + counts[1],counts[3] + counts[4],counts[6] + counts[7] + counts[2] + counts[5]);
-			double thisNonSpecificity = thisbba.getNonSpecificity();
+			double thisNonSpecificity = thisbba.getNonSpecificityMeasureValue();
 			thisbba.getGlobalUncertaintyMeasure();
 			System.out.printf("%+10e\n",thisNonSpecificity);
 			System.out.printf("%+10e\n",thisNonSpecificity);
@@ -698,13 +698,13 @@ public class DSTTDTClassifier{
 						MassFunction bba=current.getRootBBA();
 						ArrayList<Integer> memership= new ArrayList<Integer>();
 						memership.add(+1);
-						double belC = bba.calcolaConfirmationFunction(memership);
+						double belC = bba.getConfirmationFunctionValue(memership);
 						////								double confirmationFunctionValuePos = bba.calcolaBeliefFunction(ipotesi);
 						//								// not concept
 						ArrayList<Integer> nonmemership= new ArrayList<Integer>();
 						nonmemership.add(-1);
-						double belNonC = bba.calcolaBeliefFunction(nonmemership);
-						bba.calcolaBeliefFunction(nonmemership);
+						double belNonC = bba.computeBeliefFunction(nonmemership);
+						bba.computeBeliefFunction(nonmemership);
 						ArrayList<Integer> unkown= new ArrayList<Integer>();
 						unkown.add(-1);
 						unkown.add(+1);

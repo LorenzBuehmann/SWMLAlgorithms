@@ -5,14 +5,12 @@ import java.io.PrintStream;
 import evaluation.Evaluation;
 import evaluation.Parameters;
 import evaluation.task.AffiliationPrediction;
-import evaluation.task.MutagenicoPrediction;
+import evaluation.task.MutagenicPrediction;
 import evaluation.task.ClassMembershipPrediction;
-import evaluation.task.PUClassMembershipPrediction;
 import evaluation.task.PoliticianGenerator;
 import evaluation.task.PoliticianPrediction;
 
 import knowledgeBasesHandler.KnowledgeBase;
-import knowledgeBasesHandler.KnowledgeBaseForRoughConceptLearning;
 
 
 
@@ -43,9 +41,9 @@ static KnowledgeBase kb;
 		case MUTAGENICPREDICTION:
 			kb = new KnowledgeBase(Parameters.urlOwlFile);
 			if (Parameters.mutagenicAsDataPropertyPrediction)
-				vcm=new MutagenicoPrediction(kb);
+				vcm=new MutagenicPrediction(kb);
 			else
-				vcm=new MutagenicoPrediction(kb,true);
+				vcm=new MutagenicPrediction(kb,true);
 		 break;
 
 		case POLITICIANPREDICTION: 
@@ -58,8 +56,8 @@ static KnowledgeBase kb;
 			 vcm= new AffiliationPrediction(kb);
 			break;
 		default:
-			kb =new KnowledgeBaseForRoughConceptLearning(Parameters.urlOwlFile);
-			vcm= new PUClassMembershipPrediction(kb);
+//			kb =new KnowledgeBaseForRoughConceptLearning(Parameters.urlOwlFile);
+//			vcm= new PUClassMembershipPrediction(kb);
 		}
 //		
 	String className =  Parameters.algorithm.toString(); 		// package name

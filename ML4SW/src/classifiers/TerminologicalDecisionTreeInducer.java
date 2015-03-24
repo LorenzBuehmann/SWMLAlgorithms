@@ -19,8 +19,6 @@ import utils.Generator;
 import knowledgeBasesHandler.KnowledgeBase;
 
 
-import classifiers.refinementOperator.NonRandomRefinementOperator;
-import classifiers.refinementOperator.NonRecursiveDownwardRefinementOperator;
 import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.TDTClassifier;
 import classifiers.trees.models.DLTree;

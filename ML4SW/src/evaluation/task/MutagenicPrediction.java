@@ -11,13 +11,13 @@ import evaluation.AIFBConceptGenerator;
 import evaluation.CarcinogesesisGenerator;
 import knowledgeBasesHandler.KnowledgeBase;
 
-public class MutagenicoPrediction extends ClassMembershipPrediction {
+public class MutagenicPrediction extends ClassMembershipPrediction {
 
-	public MutagenicoPrediction() {
+	public MutagenicPrediction() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public MutagenicoPrediction(KnowledgeBase k) {
+	public MutagenicPrediction(KnowledgeBase k) {
 		super();
 		kb= k;
 		CarcinogesesisGenerator gen= new CarcinogesesisGenerator(kb);
@@ -33,7 +33,7 @@ public class MutagenicoPrediction extends ClassMembershipPrediction {
 
 	}
 	
-	public MutagenicoPrediction(KnowledgeBase k, boolean conceptlearning) {
+	public MutagenicPrediction(KnowledgeBase k, boolean conceptlearning) {
 		super();
 		kb= k;
 		String[] positiveExamples = { "d1",

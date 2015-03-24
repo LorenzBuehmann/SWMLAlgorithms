@@ -86,7 +86,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 					// else (a non-leaf node) ...
 					else{
 						OWLDescription[] cConcepts= new OWLDescription[0];
-						ArrayList<OWLDescription> cConceptsL = op.generateNewConcepts(dim, posExs, negExs);
+						ArrayList<OWLDescription> cConceptsL = op.generateNewConcepts(dim, posExs, negExs, false);
 						//						cConceptsL= getRandomSelection(cConceptsL); // random selection of feature set
 
 						cConcepts = cConceptsL.toArray(cConcepts);

@@ -87,17 +87,17 @@ public class ETRFClassifier {
 		ArrayList<Integer> ipotesi= new ArrayList<Integer>();
 		ipotesi.add(+1);
 		
-		double confirmationFunctionValuePos = bba.calcolaConfirmationFunction(ipotesi);
+		double confirmationFunctionValuePos = bba.getConfirmationFunctionValue(ipotesi);
 		//		double confirmationFunctionValuePos = bba.calcolaBeliefFunction(ipotesi);
 		// not concept
 		ArrayList<Integer> ipotesi2= new ArrayList<Integer>();
 		ipotesi2.add(-1);
-		double confirmationFunctionValueNeg = bba.calcolaConfirmationFunction(ipotesi2);
+		double confirmationFunctionValueNeg = bba.getConfirmationFunctionValue(ipotesi2);
 		//		double confirmationFunctionValueNeg = bba.calcolaBeliefFunction(ipotesi2);
 		ArrayList<Integer> ipotesi3= new ArrayList<Integer>();
 		ipotesi3.add(-1);
 		ipotesi3.add(+1);
-		double confirmationFunctionValueUnc = bba.calcolaConfirmationFunction(ipotesi3);
+		double confirmationFunctionValueUnc = bba.getConfirmationFunctionValue(ipotesi3);
 		//		double confirmationFunctionValueUnc = bba.calcolaBeliefFunction(ipotesi3);
 
 		if((confirmationFunctionValueUnc>confirmationFunctionValuePos)&&(confirmationFunctionValueUnc>confirmationFunctionValueNeg))
@@ -141,7 +141,7 @@ public class ETRFClassifier {
 			others[i-1]=function[i];
 		}
 		if(others.length>=1){
-			bba=bba.applicaCombinazione(others);
+			bba=bba.combineEvidences(others);
 
 		}
 		//  apply combination rule for BBA
