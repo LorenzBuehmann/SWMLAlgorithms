@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 
 import utils.Couple;
 import utils.Npla;
+import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.AbstractTree;
 import classifiers.trees.models.DLTree;
 import evaluation.Parameters;
@@ -80,7 +81,8 @@ public class RandomizedTDTClassifier extends AbstractTDTClassifier{
 				// else (a non-leaf node) ...
 					else{
 						OWLClassExpression[] cConcepts= new OWLClassExpression[0];
-						ArrayList<OWLClassExpression> cConceptsL = op.generateNewConcepts(dim, posExs, negExs);
+						ArrayList<OWLClassExpression> cConceptsL = op.generateNewConcepts(dim, posExs, negExs, false);
+
 						System.out.println("Size: "+cConceptsL);
 						cConceptsL= getRandomSelection(cConceptsL); // random selection of feature set
 					
@@ -164,9 +166,9 @@ private ArrayList<OWLClassExpression> getRandomSelection(ArrayList<OWLClassExpre
 				stop=true;
 				result=-1;
 
-			}else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass))
+			}else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass))
 				stack.push(currentTree.getPosSubTree());
-			else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)))
+			else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)))
 				stack.push(currentTree.getNegSubTree());
 			else {
 				stop=true;

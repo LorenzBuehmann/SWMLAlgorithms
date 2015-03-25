@@ -9,6 +9,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 
 import classifiers.ensemble.Ensemble;
 import classifiers.ensemble.terminologicalRandomForests.TRFClassifier;
+import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.DLTree;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasoner;

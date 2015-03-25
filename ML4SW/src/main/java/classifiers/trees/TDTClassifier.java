@@ -3,18 +3,15 @@ package classifiers.trees;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import java.util.Stack;
 
 import knowledgeBasesHandler.KnowledgeBase;
 
-import org.semanticweb.owl.model.OWLDataFactory;
-import org.semanticweb.owl.model.OWLDescription;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 
 import utils.Couple;
 import utils.Npla;
-
-
 import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.AbstractTree;
 import classifiers.trees.models.DLTree;
@@ -85,14 +82,14 @@ public class TDTClassifier extends AbstractTDTClassifier {
 					}		
 					// else (a non-leaf node) ...
 					else{
-						OWLDescription[] cConcepts= new OWLDescription[0];
-						ArrayList<OWLDescription> cConceptsL = op.generateNewConcepts(dim, posExs, negExs);
+						OWLClassExpression[] cConcepts= new OWLClassExpression[0];
+						ArrayList<OWLClassExpression> cConceptsL = op.generateNewConcepts(dim, posExs, negExs, false);
 						//						cConceptsL= getRandomSelection(cConceptsL); // random selection of feature set
 
 						cConcepts = cConceptsL.toArray(cConcepts);
 
 						// select node concept
-						OWLDescription newRootConcept = Parameters.CCP?(selectBestConceptCCP(cConcepts, posExs, negExs, undExs, prPos, prNeg, truePos, trueNeg)):(selectBestConcept(cConcepts, posExs, negExs, undExs, prPos, prNeg));
+						OWLClassExpression newRootConcept = Parameters.CCP?(selectBestConceptCCP(cConcepts, posExs, negExs, undExs, prPos, prNeg, truePos, trueNeg)):(selectBestConcept(cConcepts, posExs, negExs, undExs, prPos, prNeg));
 
 						ArrayList<Integer> posExsT = new ArrayList<Integer>();
 						ArrayList<Integer> negExsT = new ArrayList<Integer>();
@@ -216,7 +213,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 				System.out.println("Print");
 				DLTree current= stack.pop(); // leggo l'albero corrente
 
-				List<DLTree> leaves= current.getFoglie();
+				List<DLTree> leaves= current.getLeaves();
 				System.out.println("Print 2");
 				
 				   int commissionRoot= current.getCommission();
@@ -359,7 +356,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 			while(!stack.isEmpty() && !stop){
 				DLTree currentTree= stack.pop();
 
-				OWLDescription rootClass = currentTree.getRoot();
+				OWLClassExpression rootClass = currentTree.getRoot();
 				//			System.out.println("Root class: "+ rootClass);
 				if (rootClass.equals(dataFactory.getOWLThing())){
 					if (results2[indTestEx]==+1){
@@ -395,7 +392,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 					stop=true;
 					result=-1;
 
-				}else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass)){
+				}else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass)){
 					if(results2[indTestEx]==+1){
 						currentTree.setMatch(0);
 						currentTree.setPos();
@@ -409,7 +406,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 					stack.push(currentTree.getPosSubTree());
 
 				}
-				else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass))){
+				else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass))){
 
 					if(results2[indTestEx]==+1){
 						currentTree.setPos();
@@ -445,7 +442,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 			while(!stack.isEmpty() && !stop){
 				DLTree currentTree= stack.pop();
 
-				OWLDescription rootClass = currentTree.getRoot();
+				OWLClassExpression rootClass = currentTree.getRoot();
 				//			System.out.println("Root class: "+ rootClass);
 				if (rootClass.equals(dataFactory.getOWLThing())){
 					if(results2[indTestEx]==+1){
@@ -475,7 +472,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 					stop=true;
 					result=-1;
 
-				}else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass)){
+				}else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass)){
 					if(results2[indTestEx]==+1){
 						currentTree.setMatch(0);
 						currentTree.setPos();

@@ -2,17 +2,18 @@ package classifiers.ensemble.terminologicalRandomForests;
 
 
 import java.util.ArrayList;
-import knowledgeBasesHandler.*;
 
-import org.semanticweb.owl.model.OWLDescription;
+import knowledgeBasesHandler.KnowledgeBase;
 
+import org.semanticweb.owlapi.model.OWLClassExpression;
+
+import samplers.BalancedDataset;
+import utils.Triple;
 import classifiers.ensemble.Ensemble;
 import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.RandomizedTDTClassifier;
 import classifiers.trees.models.DLTree;
 import evaluation.Parameters;
-import samplers.BalancedDataset;
-import utils.Triple;
 
 public class TRFClassifier {
 	
@@ -108,7 +109,7 @@ public class TRFClassifier {
 	}
 
 	@SuppressWarnings("unchecked")
-	public	void classifyExamples(int indTestEx, @SuppressWarnings("rawtypes") Ensemble[] forests, int[] results, OWLDescription[] testConcepts, int...rclass) {
+	public	void classifyExamples(int indTestEx, @SuppressWarnings("rawtypes") Ensemble[] forests, int[] results, OWLClassExpression[] testConcepts, int...rclass) {
 
 		int length = testConcepts!=null?testConcepts.length:1;
 		for (int c=0; c < length; c++) {

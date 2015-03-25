@@ -1,5 +1,6 @@
 package evaluation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,9 +36,10 @@ public class AIFBConceptGenerator extends ConceptGenerator {
 		OWLObjectProperty prop= kb.getRoles()[95];
 		// considerare la propriet� no. 95
 
-		System.out.println(owlClass2 +" "+reasoner.getInstances(owlClass2, false).size());
-		examples= new OWLIndividual[reasoner.getInstances(owlClass2, false).size()];
-		examples=reasoner.getInstances(owlClass2, false).toArray(examples);
+		Set<OWLNamedIndividual> instances = reasoner.getInstances(owlClass2, false).getFlattened();
+		System.out.println(owlClass2 +" "+instances.size());
+		examples= new OWLIndividual[instances.size()];
+		examples=new ArrayList<OWLNamedIndividual>(instances).toArray(examples);
 
 		// per ogni research group generare il concetto \exists R 
 

@@ -8,21 +8,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import knowledgeBasesHandler.KnowledgeBase;
-import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLIndividual;
 
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLIndividual;
+
+import utils.Couple;
+import utils.Generator;
 import classifiers.SupervisedLearnable;
+import evaluation.ConceptGenerator;
 import evaluation.CrossValidation;
 import evaluation.Evaluation;
-import evaluation.ConceptGenerator;
 import evaluation.Parameters;
 import evaluation.designOfExperiments.AlgorithmName;
 import evaluation.metrics.GlobalPerformanceMetricsComputation;
 import evaluation.metrics.ModelComplexityEvaluation;
-
-
-import utils.Couple;
-import utils.Generator;
 
 
 
@@ -35,8 +34,8 @@ import utils.Generator;
 public class ClassMembershipPrediction implements Evaluation {
 	protected static KnowledgeBase kb;
 	protected OWLIndividual[] allExamples;
-	protected OWLDescription[] testConcepts;
-	protected OWLDescription[] negTestConcepts;
+	protected OWLClassExpression[] testConcepts;
+	protected OWLClassExpression[] negTestConcepts;
 	//	private OWLClass[] concetti;
 	protected int[][] classification;
 
@@ -59,7 +58,7 @@ public class ClassMembershipPrediction implements Evaluation {
 		ConceptGenerator qg= new ConceptGenerator(kb);
 		testConcepts=qg.generateQueryConcepts(Parameters.NUMGENCONCEPTS);
 
-		negTestConcepts=new OWLDescription[testConcepts.length];
+		negTestConcepts=new OWLClassExpression[testConcepts.length];
 		for (int c=0; c<testConcepts.length; c++) 
 			negTestConcepts[c] = kb.getDataFactory().getOWLObjectComplementOf(testConcepts[c]);
 		// Classification wrt all query concepts
@@ -284,7 +283,7 @@ public class ClassMembershipPrediction implements Evaluation {
 
 		CrossValidation cv = new CrossValidation(nFolds,nExs);
 
-		//	OWLDescription[] testConcepts = allConcepts;
+		//	OWLClassExpression[] testConcepts = allConcepts;
 		int nTestConcepts = testConcepts!=null?testConcepts.length:1;
 
 		GlobalPerformanceMetricsComputation gbpmc= new GlobalPerformanceMetricsComputation(nTestConcepts,nFolds);

@@ -2,10 +2,9 @@ package evaluation.task;
 
 import knowledgeBasesHandler.KnowledgeBase;
 
-import org.semanticweb.owl.model.OWLDescription;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import utils.Couple;
-import evaluation.AIFBConceptGenerator;
 
 public class PoliticianPrediction extends ClassMembershipPrediction{
 
@@ -16,7 +15,7 @@ public class PoliticianPrediction extends ClassMembershipPrediction{
 		kb= k;
 		PoliticianGenerator gen= new PoliticianGenerator(kb);
 		
-		Couple<OWLDescription[], OWLDescription[]> query= gen.generateQueryConcept();
+		Couple<OWLClassExpression[], OWLClassExpression[]> query= gen.generateQueryConcept();
 		
 		testConcepts= query.getFirstElement();
 		negTestConcepts=query.getSecondElement();

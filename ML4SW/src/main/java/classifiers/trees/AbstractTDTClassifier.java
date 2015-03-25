@@ -10,6 +10,7 @@ import knowledgeBasesHandler.KnowledgeBase;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 
+import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.AbstractTree;
 import classifiers.trees.models.DLTree;
 import evaluation.Parameters;
@@ -83,9 +84,9 @@ public abstract class AbstractTDTClassifier {
 					stop=true;
 					result=-1;
 
-				}else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass))
+				}else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass))
 					stack.push(currentTree.getPosSubTree());
-				else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)))
+				else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)))
 					stack.push(currentTree.getNegSubTree());
 				else {
 					stop=true;
@@ -109,7 +110,7 @@ public abstract class AbstractTDTClassifier {
 					stop=true;
 					result=-1;
 
-				}else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass))
+				}else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass))
 					stack.push(currentTree.getPosSubTree());
 				else 
 					stack.push(currentTree.getNegSubTree()); // for those kb having no full complement
@@ -145,9 +146,9 @@ public int classifyExample(List<Integer> list, int indTestEx, DLTree tree) {
 			result=-1;
 			list.add(result);
 
-		}else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass))
+		}else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass))
 			stack.push(currentTree.getPosSubTree());
-		else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)))
+		else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)))
 			stack.push(currentTree.getNegSubTree());
 		else {
 			//				stop=true;
@@ -338,7 +339,7 @@ private int[] getSplitCounts(OWLClassExpression concept, ArrayList<Integer> posE
 
 }
 
-protected void split(OWLDescription concept, ArrayList<Integer> posExs, ArrayList<Integer> negExs, ArrayList<Integer> undExs,
+protected void split(OWLClassExpression concept, ArrayList<Integer> posExs, ArrayList<Integer> negExs, ArrayList<Integer> undExs,
 		ArrayList<Integer> posExsT, ArrayList<Integer> negExsT, ArrayList<Integer> undExsT, ArrayList<Integer> posExsF, ArrayList<Integer> negExsF,
 		ArrayList<Integer> undExsF) {
 
@@ -352,15 +353,15 @@ protected void split(OWLDescription concept, ArrayList<Integer> posExs, ArrayLis
 
 }
 
-private void splitGroup(OWLDescription concept, ArrayList<Integer> nodeExamples, ArrayList<Integer> trueExs,
+private void splitGroup(OWLClassExpression concept, ArrayList<Integer> nodeExamples, ArrayList<Integer> trueExs,
 		ArrayList<Integer> falseExs, ArrayList<Integer> undExs) {
-	OWLDescription negConcept = kb.getDataFactory().getOWLObjectComplementOf(concept);
+	OWLClassExpression negConcept = kb.getDataFactory().getOWLObjectComplementOf(concept);
 
 	for (int e=0; e<nodeExamples.size(); e++) {
 		int exIndex = nodeExamples.get(e);
-		if (kb.getReasoner().hasType(kb.getIndividuals()[exIndex], concept))
+		if (kb.hasType(kb.getIndividuals()[exIndex], concept))
 			trueExs.add(exIndex);
-		else if (kb.getReasoner().hasType(kb.getIndividuals()[exIndex], negConcept))
+		else if (kb.hasType(kb.getIndividuals()[exIndex], negConcept))
 			falseExs.add(exIndex);
 		else
 			undExs.add(exIndex);		

@@ -1,17 +1,16 @@
 package evaluation.task;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.semanticweb.owl.model.OWLClass;
-import org.semanticweb.owl.model.OWLDataFactory;
-import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLIndividual;
-import org.semanticweb.owl.model.OWLObjectProperty;
+import knowledgeBasesHandler.KnowledgeBase;
+
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import utils.Couple;
-import knowledgeBasesHandler.KnowledgeBase;
 import evaluation.ConceptGenerator;
 
 public class PoliticianGenerator extends ConceptGenerator {
@@ -23,34 +22,34 @@ public class PoliticianGenerator extends ConceptGenerator {
 
 	
 	
-	public  Couple<OWLDescription[],OWLDescription[]> generateQueryConcept(){
+	public  Couple<OWLClassExpression[],OWLClassExpression[]> generateQueryConcept(){
 
 
 		OWLClass owlClass = kb.getClasses()[130]; // research group
 		System.out.println(owlClass);
 //		OWLClass owlClass2 = kb.getClasses()[31]; // person
 //		OWLObjectProperty prop= kb.getRoles()[95];
-//		// considerare la proprietà no. 95
+//		// considerare la proprietï¿½ no. 95
 //
-		Set<OWLDescription> subClasses = owlClass.getSubClasses(kb.getOntology());
+		Set<OWLClassExpression> subClasses = owlClass.getSubClasses(kb.getOntology());
 		
-		ArrayList<OWLDescription> sub= new ArrayList<OWLDescription>(subClasses);
+		ArrayList<OWLClassExpression> sub= new ArrayList<OWLClassExpression>(subClasses);
 		
 		
 		
-		OWLDescription owlClass2 = sub.get(0); // target concept
+		OWLClassExpression owlClass2 = sub.get(0); // target concept
 		subClasses.remove(owlClass2);
-		OWLDescription owlClasses= kb.getDataFactory().getOWLObjectUnionOf(subClasses);
+		OWLClassExpression owlClasses= kb.getDataFactory().getOWLObjectUnionOf(subClasses);
 		
-		
-		allExamples= new OWLIndividual[reasoner.getIndividuals(owlClass, false).size()];
-		allExamples=reasoner.getIndividuals(owlClass, false).toArray(allExamples);
+		Set<OWLNamedIndividual> instances = reasoner.getInstances(owlClass, false).getFlattened();
+		allExamples = new OWLIndividual[instances.size()];
+		allExamples=new ArrayList<OWLNamedIndividual>().toArray(allExamples);
 //
 //		// per ogni research group generare il concetto \exists R 
 //
 //		Set<OWLIndividual> researchGroup = reasoner.getIndividuals(owlClass, false); // retrieval of research group
-		OWLDescription[] queries= {owlClass2};
-		OWLDescription[] negqueries= {owlClasses};
+		OWLClassExpression[] queries= {owlClass2};
+		OWLClassExpression[] negqueries= {owlClasses};
 //		OWLDataFactory dataFactory2 = kb.getDataFactory();
 //		int i=0;
 //
@@ -82,7 +81,7 @@ public class PoliticianGenerator extends ConceptGenerator {
 //			negqueries[j]= dataFactory2.getOWLObjectSomeRestriction(prop, dataFactory2.getOWLObjectOneOf(subset));
 //			System.out.println("Neg Queries: "+j+") "+negqueries[j]);
 			
-		Couple<OWLDescription[],OWLDescription[]> couple= new Couple<OWLDescription[],OWLDescription[]>();
+		Couple<OWLClassExpression[],OWLClassExpression[]> couple= new Couple<OWLClassExpression[],OWLClassExpression[]>();
 		couple.setFirstElement(queries);
 		couple.setSecondElement(negqueries);
 		

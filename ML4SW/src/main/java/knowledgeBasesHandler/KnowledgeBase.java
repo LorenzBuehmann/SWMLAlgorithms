@@ -3,6 +3,7 @@ package knowledgeBasesHandler;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -144,14 +145,14 @@ public class KnowledgeBase implements IKnowledgeBase {
 			System.out.printf("[%d] ",c);
 			for (int e=0; e<esempi.length; ++e) {			
 				classifications[c][e] = 0;
-				if (reasoner.hasType(esempi[e],testConcepts[c])) {
+				if (hasType(esempi[e],testConcepts[c])) {
 					classifications[c][e] = +1;
 					p++;
 
 				}
 				else{ 
 					if (!Parameters.BINARYCLASSIFICATION){
-						if (reasoner.hasType(esempi[e],negTestConcepts[c])) 
+						if (hasType(esempi[e],negTestConcepts[c])) 
 							classifications[c][e] = -1;
 					}
 					else
@@ -169,17 +170,17 @@ public class KnowledgeBase implements IKnowledgeBase {
 
 	}
 
-	public void setClassMembershipResult(int[][] classifications){
-		
-		this.classifications=classifications;
-		
+	public void setClassMembershipResult(int[][] classifications) {
+		this.classifications = classifications;
 	}
-	
-	public int[][] getClassMembershipResult(){
-		
+
+	public int[][] getClassMembershipResult() {
 		return classifications;
 	}
 	
+	public boolean hasType(OWLIndividual individual, OWLClassExpression concept) {
+		return reasoner.isEntailed(dataFactory.getOWLClassAssertionAxiom(concept, individual));
+	}
 	
 	
 	/* (non-Javadoc)
@@ -200,7 +201,7 @@ public class KnowledgeBase implements IKnowledgeBase {
 					// verifico che l'esempio j � correlato all'esempio k rispetto alla regola i
 					//System.out.println(regole[i]+" vs "+dataFactory.getOWLNegativeObjectPropertyAssertionAxiom(esempi[j], regole[i], esempi[k]).getProperty());
 					correlati[i][j][k]=0;
-					if(reasoner.hasObjectPropertyRelationship(esempi[j], ruoli[i], esempi[k]))
+					if(reasoner.isEntailed(dataFactory.getOWLObjectPropertyAssertionAxiom(ruoli[i], esempi[j], esempi[k])))
 					{correlati[i][j][k]=1;
 					//System.out.println(" Regola "+i+":   "+regole[i]+" Individui: "+i+" "+esempi[j]+" "+k+" "+esempi[k]+" "+correlati[i][j][k]);
 
@@ -253,6 +254,7 @@ public class KnowledgeBase implements IKnowledgeBase {
 
 			domini[i]=new OWLIndividual[0];
 			Map<OWLIndividual, Set<OWLLiteral>> prodottoCartesiano=creazioneProdottoCartesianoDominioXValore(properties[i]);
+
 			Set<OWLIndividual> chiavi=prodottoCartesiano.keySet();
 			//			System.out.println("Dominio propriet�: "+chiavi);
 			domini[i]=chiavi.toArray(domini[i]);// ottenimento individui facenti parte del dominio
@@ -281,12 +283,15 @@ public class KnowledgeBase implements IKnowledgeBase {
 
 
 	}
-	public Map<OWLIndividual, Set<OWLLiteral>> creazioneProdottoCartesianoDominioXValore(OWLDataProperty dataProperty){
-		Map<OWLIndividual, Set<OWLLiteral>> asserzioni = reasoner.getDataPropertyValues(arg0, arg1)(dataProperty);
+
+	public Map<OWLIndividual, Set<OWLLiteral>> creazioneProdottoCartesianoDominioXValore(OWLDataProperty dataProperty) {
+		Map<OWLIndividual, Set<OWLLiteral>> assertions = new HashMap<OWLIndividual, Set<OWLLiteral>>();
 		
-		return asserzioni;
-
-
+		Set<OWLNamedIndividual> individuals = ontology.getIndividualsInSignature();
+		for (OWLNamedIndividual ind : individuals) {
+			assertions.put(ind, reasoner.getDataPropertyValues(ind, dataProperty));
+		}
+		return assertions;
 	}
 
 
@@ -402,7 +407,7 @@ public class KnowledgeBase implements IKnowledgeBase {
 	}
 	
 	/**
-	 * Sceglie casualmente un concetto tra quelli generati
+	 * Random choice among generated concept
 	 * @return il concetto scelto
 	 */
 	public OWLClassExpression getRandomConcept() {

@@ -11,19 +11,18 @@ import java.util.Stack;
 
 import knowledgeBasesHandler.KnowledgeBase;
 
-import org.semanticweb.owl.model.OWLDataFactory;
-import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import utils.Couple;
 import utils.Npla;
-
 import classifiers.evidentialAlgorithms.DempsterShafer.MassFunction;
 import classifiers.evidentialAlgorithms.models.DSTDLTree;
 import classifiers.evidentialAlgorithms.models.EvidentialModel;
 import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.AbstractTree;
-import classifiers.trees.models.DLTree;
 import evaluation.Parameters;
 
 
@@ -164,15 +163,15 @@ public class DSTTDTClassifier{
 					if (!Parameters.nonspecificityControl){
 						
 								
-							ArrayList<OWLDescription> generateNewConcepts = op.generateNewConcepts(Parameters.beam, posExs, negExs); // genera i concetti sulla base degli esempi
-							OWLDescription[] cConcepts = new OWLDescription[generateNewConcepts.size()];
+							ArrayList<OWLClassExpression> generateNewConcepts = op.generateNewConcepts(Parameters.beam, posExs, negExs, false); // genera i concetti sulla base degli esempi
+							OWLClassExpression[] cConcepts = new OWLClassExpression[generateNewConcepts.size()];
 							
 							cConcepts= generateNewConcepts.toArray(cConcepts);
 							
-							//	OWLDescription[] cConcepts = allConcepts;
+							//	OWLClassExpression[] cConcepts = allConcepts;
 
 						// select node couoncept
-						Couple<OWLDescription,MassFunction> newRootConcept = selectBestConceptDST(cConcepts, posExs, negExs, undExs, prPos, prNeg);
+						Couple<OWLClassExpression,MassFunction> newRootConcept = selectBestConceptDST(cConcepts, posExs, negExs, undExs, prPos, prNeg);
 						MassFunction refinementMass = newRootConcept.getSecondElement();
 
 						System.out.println(newRootConcept.getFirstElement()+"----"+refinementMass);	
@@ -213,12 +212,12 @@ public class DSTTDTClassifier{
 
 
 					}
-					else if(mass.getNonSpecificity()<0.1){
-						OWLDescription[] cConcepts = generateNewConcepts(Parameters.beam, posExs, negExs); // genera i concetti sulla base degli esempi
-						//	OWLDescription[] cConcepts = allConcepts;
+					else if(mass.getNonSpecificityMeasureValue()<0.1){
+						OWLClassExpression[] cConcepts = generateNewConcepts(Parameters.beam, posExs, negExs); // genera i concetti sulla base degli esempi
+						//	OWLClassExpression[] cConcepts = allConcepts;
 
 						// select node couoncept
-						Couple<OWLDescription,MassFunction> newRootConcept = selectBestConceptDST(cConcepts, posExs, negExs, undExs, prPos, prNeg);
+						Couple<OWLClassExpression,MassFunction> newRootConcept = selectBestConceptDST(cConcepts, posExs, negExs, undExs, prPos, prNeg);
 						MassFunction refinementMass = newRootConcept.getSecondElement();
 
 						System.out.println(newRootConcept.getFirstElement()+"----"+refinementMass);	
@@ -286,7 +285,7 @@ public class DSTTDTClassifier{
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void classifyExampleDST(List<Couple<Integer,MassFunction<Integer>>> list,int indTestEx, DSTDLTree tree, OWLDescription...testConcepts ) {
+	private void classifyExampleDST(List<Couple<Integer,MassFunction<Integer>>> list,int indTestEx, DSTDLTree tree, OWLClassExpression...testConcepts ) {
 
 		
 		//	System.out.println("BBA "+m);
@@ -298,7 +297,7 @@ public class DSTTDTClassifier{
 		while (!stack.isEmpty()){
 			
 			DSTDLTree currenttree=stack.pop();
-			OWLDescription rootClass = currenttree.getRoot(); 
+			OWLClassExpression rootClass = currenttree.getRoot(); 
 			MassFunction m= currenttree.getRootBBA();
 		if (rootClass.equals(dataFactory.getOWLThing())){
 			//		System.out.println("Caso 1");
@@ -325,7 +324,7 @@ public class DSTTDTClassifier{
 			list.add(result);
 
 		}		
-		else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass)){
+		else if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass)){
 			//System.out.println(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass));
 			if (currenttree.getPosSubTree()!=null){
 
@@ -342,7 +341,7 @@ public class DSTTDTClassifier{
 				//			System.out.println("ADdded");
 			}
 		}
-		else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass))){
+		else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass))){
 				//			System.out.println(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)));
 				if (currenttree.getNegSubTree()!=null){
 //					classifyExampleDST(list,indTestEx, tree.getNegSubTree());
@@ -402,7 +401,7 @@ public class DSTTDTClassifier{
 
 
 	@SuppressWarnings({ })
-	public void classifyExamplesDST(int indTestEx, DSTDLTree[] trees, int[] results, OWLDescription[] testConcepts) {
+	public void classifyExamplesDST(int indTestEx, DSTDLTree[] trees, int[] results, OWLClassExpression[] testConcepts) {
 		int length = testConcepts!=null?testConcepts.length:1;
 		for (int c=0; c < length; c++) {
 			MassFunction<Integer> bba = getBBA(indTestEx, trees[c]);// combino con tutte le altre BBA
@@ -417,11 +416,11 @@ public class DSTTDTClassifier{
 	public MassFunction<Integer> getBBA(int indTestEx, EvidentialModel tree) {
 		DSTDLTree model= (DSTDLTree) tree;
 		ArrayList<Couple<Integer, MassFunction<Integer>>> list;
-		System.out.println("Tree \n"+ model);
+//		System.out.println("Tree \n"+ model);
 		list= new  ArrayList<Couple<Integer,MassFunction<Integer>>>();
 		classifyExampleDST(list,indTestEx, model);
 		// estraggo le BBA da tutte le foglie raggiunte
-		System.out.println("Lista di foglie");
+//		System.out.println("Lista di foglie");
 		System.out.println(list);
 		MassFunction<Integer> bba=list.get(0).getSecondElement();
 
@@ -435,7 +434,7 @@ public class DSTTDTClassifier{
 			others[i-1]=next;
 		}
 		if(others.length>=1){
-			bba=bba.applicaCombinazione(others);
+			bba=bba.combineEvidences(others);
 
 		}
 		return bba;
@@ -446,7 +445,7 @@ public class DSTTDTClassifier{
 
 
 	/**
-	 * Implements the startegy to choose the class label
+	 * Implementation of forcing criterion for the final class assignement 
 	 * @param results
 	 * @param c
 	 * @param bba
@@ -454,27 +453,23 @@ public class DSTTDTClassifier{
 	private void predict(int[] results, int c, MassFunction<Integer> bba) {
 		ArrayList<Integer> ipotesi= new ArrayList<Integer>();
 		ipotesi.add(+1);
-		double confirmationFunctionValuePos = bba.calcolaConfirmationFunction(ipotesi);
+		double confirmationFunctionValuePos = bba.getConfirmationFunctionValue(ipotesi);
 		//			double confirmationFunctionValuePos = bba.calcolaBeliefFunction(ipotesi);
 		// not concept
 		ArrayList<Integer> ipotesi2= new ArrayList<Integer>();
 		ipotesi2.add(-1);
-		double confirmationFunctionValueNeg = bba.calcolaConfirmationFunction(ipotesi2);
+		double confirmationFunctionValueNeg = bba.getConfirmationFunctionValue(ipotesi2);
 		//			double confirmationFunctionValueNeg = bba.calcolaBeliefFunction(ipotesi2);
 		ArrayList<Integer> ipotesi3= new ArrayList<Integer>();
 		ipotesi3.add(-1);
 		ipotesi3.add(+1);
-		double confirmationFunctionValueUnc = bba.calcolaConfirmationFunction(ipotesi3);
+		double confirmationFunctionValueUnc = bba.getConfirmationFunctionValue(ipotesi3);
 		//			double confirmationFunctionValueUnc = bba.calcolaBeliefFunction(ipotesi3);
 
 		System.out.println(confirmationFunctionValuePos+ " vs. "+ confirmationFunctionValueNeg+ "vs." +confirmationFunctionValueUnc);
 
 
 		if((confirmationFunctionValueUnc>confirmationFunctionValuePos)&&(confirmationFunctionValueUnc>confirmationFunctionValueNeg))
-			
-			// commentare e decommentare qui per la classificazione con e senza forcing			
-			//results[c]=0;
-
 			if (confirmationFunctionValuePos>confirmationFunctionValueNeg)
 				results[c]=+1;
 			else if (confirmationFunctionValuePos<confirmationFunctionValueNeg)
@@ -490,7 +485,7 @@ public class DSTTDTClassifier{
 
 
 	@SuppressWarnings("rawtypes")
-	private  Couple<OWLDescription, MassFunction> selectBestConceptDST(OWLDescription[] concepts,
+	private  Couple<OWLClassExpression, MassFunction> selectBestConceptDST(OWLClassExpression[] concepts,
 			ArrayList<Integer> posExs, ArrayList<Integer> negExs, ArrayList<Integer> undExs, 
 			double prPos, double prNeg) {
 
@@ -503,14 +498,14 @@ public class DSTTDTClassifier{
 				"#"+0, counts[0], counts[1], counts[2], counts[3], counts[4], counts[5], counts[6], counts[7], counts[8]);
 
 		//		double bestGain = gain(counts, prPos, prNeg);
-		//  introduzione della mbisura di non specificità
+		//  introduzione della mbisura di non specificitï¿½
 		int posExs2 = counts[0] + counts[1];
 		int negExs2 = counts[3] + counts[4];
 		int undExs2 = counts[6] + counts[7] + counts[2] + counts[5];
 		System.out.println("Split: "+posExs2 +"---"+negExs2+"--"+undExs2);
 		MassFunction<Integer> bestBba = getBBA(posExs2,negExs2,undExs2);
 
-		double bestNonSpecificity = bestBba.getNonSpecificity();
+		double bestNonSpecificity = bestBba.getNonSpecificityMeasureValue();
 		bestBba.getConfusionMeasure();
 		System.out.printf("%+10e\n",bestNonSpecificity);
 
@@ -522,7 +517,7 @@ public class DSTTDTClassifier{
 			System.out.printf("%4s\t p:%d n:%d u:%d\t p:%d n:%d u:%d\t p:%d n:%d u:%d\t ", 
 					"#"+c, counts[0], counts[1], counts[2], counts[3], counts[4], counts[5], counts[6], counts[7], counts[8]);
 			MassFunction<Integer> thisbba = getBBA(counts[0] + counts[1],counts[3] + counts[4],counts[6] + counts[7] + counts[2] + counts[5]);
-			double thisNonSpecificity = thisbba.getNonSpecificity();
+			double thisNonSpecificity = thisbba.getNonSpecificityMeasureValue();
 			thisbba.getGlobalUncertaintyMeasure();
 			System.out.printf("%+10e\n",thisNonSpecificity);
 			System.out.printf("%+10e\n",thisNonSpecificity);
@@ -536,14 +531,14 @@ public class DSTTDTClassifier{
 		}
 
 		System.out.printf("best gain: %f \t split #%d\n", bestNonSpecificity, bestConceptIndex);
-		Couple<OWLDescription,MassFunction> name = new Couple<OWLDescription,MassFunction>();
+		Couple<OWLClassExpression,MassFunction> name = new Couple<OWLClassExpression,MassFunction>();
 		name.setFirstElement(concepts[bestConceptIndex]);
 		name.setSecondElement(bestBba);
 		return name;
 	}
 
 
-	private int[] getSplitCounts(OWLDescription concept, 
+	private int[] getSplitCounts(OWLClassExpression concept, 
 			ArrayList<Integer> posExs, ArrayList<Integer> negExs, ArrayList<Integer> undExs) {
 
 		int[] counts = new int[9];
@@ -579,7 +574,7 @@ public class DSTTDTClassifier{
 	}
 
 
-	private  void split(OWLDescription concept,
+	private  void split(OWLClassExpression concept,
 			ArrayList<Integer> posExs,  ArrayList<Integer> negExs,  ArrayList<Integer> undExs,
 			ArrayList<Integer> posExsT, ArrayList<Integer> negExsT,	ArrayList<Integer> undExsT, 
 			ArrayList<Integer> posExsF,	ArrayList<Integer> negExsF, ArrayList<Integer> undExsF) {
@@ -595,15 +590,15 @@ public class DSTTDTClassifier{
 	}
 
 
-	private void splitGroup(OWLDescription concept, ArrayList<Integer> nodeExamples,
+	private void splitGroup(OWLClassExpression concept, ArrayList<Integer> nodeExamples,
 			ArrayList<Integer> trueExs, ArrayList<Integer> falseExs, ArrayList<Integer> undExs) {
-		OWLDescription negConcept = kb.getDataFactory().getOWLObjectComplementOf(concept);
+		OWLClassExpression negConcept = kb.getDataFactory().getOWLObjectComplementOf(concept);
 
 		for (int e=0; e<nodeExamples.size(); e++) {
 			int exIndex = nodeExamples.get(e);
-			if (kb.getReasoner().hasType(kb.getIndividuals()[exIndex], concept))
+			if (kb.hasType(kb.getIndividuals()[exIndex], concept))
 				trueExs.add(exIndex);
-			else if (kb.getReasoner().hasType(kb.getIndividuals()[exIndex], negConcept))
+			else if (kb.hasType(kb.getIndividuals()[exIndex], negConcept))
 				falseExs.add(exIndex);
 			else
 				undExs.add(exIndex);		
@@ -611,19 +606,19 @@ public class DSTTDTClassifier{
 	}
 
 
-	private OWLDescription[] generateNewConcepts(int dim, ArrayList<Integer> posExs, ArrayList<Integer> negExs) {
+	private OWLClassExpression[] generateNewConcepts(int dim, ArrayList<Integer> posExs, ArrayList<Integer> negExs) {
 
 		System.out.printf("Generating node concepts ");
-		OWLDescription[] rConcepts = new OWLDescription[dim];
-		OWLDescription newConcept;
+		OWLClassExpression[] rConcepts = new OWLClassExpression[dim];
+		OWLClassExpression newConcept;
 		boolean emptyIntersection;
 		for (int c=0; c<dim; c++) {
 			do {
 				emptyIntersection = false; // true
 				newConcept = kb.getRandomConcept();
 
-				Set<OWLIndividual> individuals = (kb.getReasoner()).getIndividuals(newConcept, false);
-				Iterator<OWLIndividual> instIterator = individuals.iterator();
+				Set<OWLNamedIndividual> individuals = (kb.getReasoner()).getInstances(newConcept, false).getFlattened();
+				Iterator<OWLNamedIndividual> instIterator = individuals.iterator();
 				while (emptyIntersection && instIterator.hasNext()) {
 					OWLIndividual nextInd = (OWLIndividual) instIterator.next();
 					int index = -1;
@@ -664,7 +659,7 @@ public class DSTTDTClassifier{
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void prune(Integer[] pruningSet, AbstractTree tree, AbstractTree subtree,OWLDescription testConcept){
+	public void prune(Integer[] pruningSet, AbstractTree tree, AbstractTree subtree,OWLClassExpression testConcept){
 		DSTDLTree treeDST= (DSTDLTree) tree;
 		Stack<DSTDLTree> stack= new Stack<DSTDLTree>();
 		stack.add(treeDST);
@@ -698,13 +693,13 @@ public class DSTTDTClassifier{
 						MassFunction bba=current.getRootBBA();
 						ArrayList<Integer> memership= new ArrayList<Integer>();
 						memership.add(+1);
-						double belC = bba.calcolaConfirmationFunction(memership);
+						double belC = bba.getConfirmationFunctionValue(memership);
 						////								double confirmationFunctionValuePos = bba.calcolaBeliefFunction(ipotesi);
 						//								// not concept
 						ArrayList<Integer> nonmemership= new ArrayList<Integer>();
 						nonmemership.add(-1);
-						double belNonC = bba.calcolaBeliefFunction(nonmemership);
-						bba.calcolaBeliefFunction(nonmemership);
+						double belNonC = bba.computeBeliefFunction(nonmemership);
+						bba.computeBeliefFunction(nonmemership);
 						ArrayList<Integer> unkown= new ArrayList<Integer>();
 						unkown.add(-1);
 						unkown.add(+1);
@@ -751,7 +746,7 @@ public class DSTTDTClassifier{
 	}
 
 
-	public int[] doREPPruning(Integer[] pruningset, DSTDLTree tree, OWLDescription testconcept){
+	public int[] doREPPruning(Integer[] pruningset, DSTDLTree tree, OWLClassExpression testconcept){
 		// step 1: classification
 
 		System.out.println("Number of Nodes  Before pruning"+ tree.getComplexityMeasure());
@@ -782,10 +777,10 @@ public class DSTTDTClassifier{
 	 */
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void classifyExampleDSTforPruning(List<Couple<Integer,MassFunction<Integer>>> list,int indTestEx, DSTDLTree tree, OWLDescription testconcept) {
-		System.out.println(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], testconcept));
+	private void classifyExampleDSTforPruning(List<Couple<Integer,MassFunction<Integer>>> list,int indTestEx, DSTDLTree tree, OWLClassExpression testconcept) {
+		System.out.println(kb.hasType(kb.getIndividuals()[indTestEx], testconcept));
 		System.out.printf(tree+ "[%d %d %d %d] \n", tree.getMatch(), tree.getCommission(),tree.getOmission(),tree.getInduction());
-		OWLDescription rootClass = tree.getRoot(); 
+		OWLClassExpression rootClass = tree.getRoot(); 
 		MassFunction m= tree.getRootBBA();
 		//		System.out.println("BBA "+m);
 		//		System.out.printf("%d %d %d %d \n", tree.getMatch(), tree.getCommission(),tree.getOmission(),tree.getInduction());
@@ -796,9 +791,9 @@ public class DSTTDTClassifier{
 			result.setFirstElement(+1);
 			result.setSecondElement(m);
 			list.add(result);
-			if(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], testconcept))
+			if(kb.hasType(kb.getIndividuals()[indTestEx], testconcept))
 				tree.setMatch(0);
-			else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
+			else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
 				tree.setCommission(0);
 			else{
 				tree.setInduction(0);
@@ -814,11 +809,11 @@ public class DSTTDTClassifier{
 			result.setFirstElement(-1);
 			result.setSecondElement(m);
 			list.add(result);
-			if(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], testconcept)){
+			if(kb.hasType(kb.getIndividuals()[indTestEx], testconcept)){
 				System.out.println("c");
 				tree.setCommission(0);
 			}
-			else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept))){
+			else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept))){
 				System.out.println("+m");
 				tree.setMatch(0);
 			}
@@ -829,11 +824,11 @@ public class DSTTDTClassifier{
 			//			System.out.printf(tree+"%d %d %d %d \n", tree.getMatch(), tree.getCommission(),tree.getOmission(),tree.getInduction());
 		}
 
-		if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass)){
+		if (kb.hasType(kb.getIndividuals()[indTestEx], rootClass)){
 			//System.out.println(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], rootClass));
-			if(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], testconcept))
+			if(kb.hasType(kb.getIndividuals()[indTestEx], testconcept))
 				tree.setMatch(0);
-			else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
+			else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
 				tree.setCommission(0);
 			else{
 				tree.setInduction(0);
@@ -853,11 +848,11 @@ public class DSTTDTClassifier{
 			}
 		}
 		else
-			if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass))){
+			if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass))){
 				//				System.out.println(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(rootClass)));
-				if(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], testconcept))
+				if(kb.hasType(kb.getIndividuals()[indTestEx], testconcept))
 					tree.setCommission(0);
-				else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
+				else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
 					tree.setMatch(0);
 				else{
 					tree.setInduction(0);
@@ -881,9 +876,9 @@ public class DSTTDTClassifier{
 				//seguo entrambi i percorsi
 				System.out.println("---->");
 
-				if(kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], testconcept))
+				if(kb.hasType(kb.getIndividuals()[indTestEx], testconcept))
 					tree.setOmission(0);
-				else if (kb.getReasoner().hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
+				else if (kb.hasType(kb.getIndividuals()[indTestEx], dataFactory.getOWLObjectComplementOf(testconcept)))
 					tree.setOmission(0);
 				else{
 					tree.setMatch(0);

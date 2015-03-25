@@ -1,11 +1,11 @@
 package evaluation.task;
 
-import org.semanticweb.owl.model.OWLDescription;
-import utils.Couple;
-
-import evaluation.AIFBConceptGenerator;
-
 import knowledgeBasesHandler.KnowledgeBase;
+
+import org.semanticweb.owlapi.model.OWLClassExpression;
+
+import utils.Couple;
+import evaluation.AIFBConceptGenerator;
 
 public class AffiliationPrediction extends ClassMembershipPrediction {
 	
@@ -20,7 +20,7 @@ public class AffiliationPrediction extends ClassMembershipPrediction {
 		kb= k;
 		AIFBConceptGenerator gen= new AIFBConceptGenerator(kb);
 		
-		Couple<OWLDescription[], OWLDescription[]> query= gen.generateQueryConcept();
+		Couple<OWLClassExpression[], OWLClassExpression[]> query= gen.generateQueryConcept();
 		
 		testConcepts= query.getFirstElement();
 		negTestConcepts=query.getSecondElement();

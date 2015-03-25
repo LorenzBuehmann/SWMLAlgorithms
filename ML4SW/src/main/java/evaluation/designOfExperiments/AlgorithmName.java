@@ -22,10 +22,8 @@ public enum AlgorithmName {
 		
 		else if (this.compareTo(DSTTerminologicalRandomForests)==0)
 			return "classifiers.EvidentialTerminologicalRandomForestInducer";
-		else if (this.compareTo(RoughTerminologicalDecisionTree)==0)
-			return "classifiers.RoughTerminologicalDecisionTreeInducer";
-		
-	
+		else //if (this.compareTo(RoughTerminologicalDecisionTree)==0)
+			//return "classifiers.RoughTerminologicalDecisionTreeInducer";
 		return "";
 	}
 
@@ -39,8 +37,8 @@ public enum AlgorithmName {
 			return DSTTerminologicalDecisionTree;
 //		else if (name.compareTo("classifiers.TerminologicalDecisionTreeInducer")==0)
 //			return TerminologicalDecisionTree;
-		else if (name.compareTo("classifiers.RoughTerminologicalDecisionTreeInducer")==0)
-			return RoughTerminologicalDecisionTree;
+//		else if (name.compareTo("classifiers.RoughTerminologicalDecisionTreeInducer")==0)
+//			return RoughTerminologicalDecisionTree;
 		else 
 			return DSTTerminologicalRandomForests;
 		

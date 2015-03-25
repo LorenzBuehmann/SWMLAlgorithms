@@ -161,27 +161,27 @@ public class DLTree extends AbstractTree {
 
 
 
-	private double getNodi(){
+	private double getNodes(){
 		// visita in ampiezza per effettuare il conteggio
 
-		ArrayList<DLNode> lista = new ArrayList<DLNode>();
+		ArrayList<DLNode> list = new ArrayList<DLNode>();
 		double  num=0;
 		if(root!=null){
-			lista.add(root);
-			while(!lista.isEmpty()){
-				DLNode node= lista.get(0);
-				lista.remove(0);
+			list.add(root);
+			while(!list.isEmpty()){
+				DLNode node= list.get(0);
+				list.remove(0);
 				num++;
 				DLNode sx=null;
 				if(node.pos!=null){
 					sx= node.pos.root;
 					if(sx!=null)
-						lista.add(sx);
+						list.add(sx);
 				}
 				if(node.neg!=null){
 					sx= node.neg.root;
 					if(sx!=null)
-						lista.add(sx);
+						list.add(sx);
 				}
 
 			}
@@ -195,30 +195,29 @@ public class DLTree extends AbstractTree {
 	@Override
 	public double getComplexityMeasure() {
 		// TODO Auto-generated method stub
-		return getNodi();
+		return getNodes();
 	}
 
 
-	public List<DLTree> getFoglie(){
+	public List<DLTree> getLeaves(){
 		ArrayList<DLTree> leaves= new ArrayList<DLTree>();
 
-		ArrayList<DLTree> lista = new ArrayList<DLTree>();
+		ArrayList<DLTree> list = new ArrayList<DLTree>();
 
 		if(root!=null){
-			lista.add(this);
-			while(!lista.isEmpty()){
-				System.out.println("lol");
-				DLTree current= lista.get(0);
-				lista.remove(0);
+			list.add(this);
+			while(!list.isEmpty()){
+				DLTree current= list.get(0);
+				list.remove(0);
 				if ((current.getPosSubTree()==null)&&(current.getNegSubTree()==null))
 					leaves.add(current);
 
 				else{
 					if(current.getPosSubTree()!=null)
-						lista.add(current.getPosSubTree());
+						list.add(current.getPosSubTree());
 
 					if (current.getNegSubTree()!=null)
-						lista.add(current.getNegSubTree());
+						list.add(current.getNegSubTree());
 				}
 			}
 

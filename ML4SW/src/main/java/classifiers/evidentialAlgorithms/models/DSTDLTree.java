@@ -3,23 +3,21 @@ package classifiers.evidentialAlgorithms.models;
 
 import java.util.ArrayList;
 
-import org.semanticweb.owl.model.OWLDescription;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import classifiers.evidentialAlgorithms.DempsterShafer.MassFunction;
-
-
-import classifiers.trees.models.*;
+import classifiers.trees.models.AbstractTree;
 public class DSTDLTree extends AbstractTree implements EvidentialModel{
 
 	private class DLNode {
-		OWLDescription concept;	// node concept
+		OWLClassExpression concept;	// node concept
 		
 		DSTDLTree pos; 			// positive decision subtree
 		DSTDLTree neg; 	// negative decision subtree
 		@SuppressWarnings("rawtypes")
 		MassFunction m;
 		@SuppressWarnings("rawtypes")
-		public DLNode(OWLDescription c, MassFunction m) {
+		public DLNode(OWLClassExpression c, MassFunction m) {
 			concept = c;
 			this.pos = this.neg = null; // node has no children
 			this.m= m; // Dempster-Shafer extension
@@ -53,7 +51,7 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public DSTDLTree (OWLDescription c, MassFunction m) {		
+	public DSTDLTree (OWLClassExpression c, MassFunction m) {		
 		this.root = new DLNode(c,m);
 	
 	}
@@ -62,7 +60,7 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	 * @param root the root to set
 	 */
 	@SuppressWarnings("rawtypes")
-	public void setRoot(OWLDescription concept, MassFunction m) {
+	public void setRoot(OWLClassExpression concept, MassFunction m) {
 		this.root = new DLNode(concept, m);
 //		this.root.concept = concept;
 	}
@@ -70,7 +68,7 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	/**
 	 * @return the root
 	 */
-	public OWLDescription getRoot() {
+	public OWLClassExpression getRoot() {
 		return root.concept;
 	}
 	
@@ -128,27 +126,27 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	
 	
 	
-	private double getNodi(){
+	private double getNodes(){
 		// visita in ampiezza per effettuare il conteggio
 		
-		ArrayList<DLNode> lista = new ArrayList<DLNode>();
+		ArrayList<DLNode> list = new ArrayList<DLNode>();
 		double  num=0;
 		if(root!=null){
-			lista.add(root);
-			while(!lista.isEmpty()){
-				DLNode node= lista.get(0);
-				lista.remove(0);
+			list.add(root);
+			while(!list.isEmpty()){
+				DLNode node= list.get(0);
+				list.remove(0);
 				num++;
 				DLNode sx=null;
 				if(node.pos!=null){
 					sx= node.pos.root;
 				 	if(sx!=null)
-					 lista.add(sx);
+					 list.add(sx);
 				}
 				if(node.neg!=null){
 				 sx= node.neg.root;
 				 if(sx!=null)
-					 lista.add(sx);
+					 list.add(sx);
 				}
 					 
 			}
@@ -162,7 +160,7 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	@Override
 	public double getComplexityMeasure() {
 		
-		return getNodi();
+		return getNodes();
 	}
 	
 

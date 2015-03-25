@@ -10,6 +10,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 
 import classifiers.evidentialAlgorithms.DSTTDTClassifier;
 import classifiers.evidentialAlgorithms.models.DSTDLTree;
+import classifiers.refinementOperator.RefinementOperator;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
 
@@ -77,9 +78,9 @@ import evaluation.Parameters;
 				// ha splittato in istanze negative, positive e incerte per un singolo albero
 				for (int e=0; e<trainingExs.length; e++){
 
-					if (reasoner.hasType(allExamples[trainingExs[e]], testConcepts[c]))
+					if (kb.hasType(allExamples[trainingExs[e]], testConcepts[c]))
 						posExs.add(trainingExs[e]);
-					else if (reasoner.hasType(allExamples[trainingExs[e]], negTestConcepts[c]))
+					else if (kb.hasType(allExamples[trainingExs[e]], negTestConcepts[c]))
 						negExs.add(trainingExs[e]);
 					else
 						undExs.add(trainingExs[e]);

@@ -14,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
 
 import utils.Generator;
+import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.TDTClassifier;
 import classifiers.trees.models.DLTree;
 

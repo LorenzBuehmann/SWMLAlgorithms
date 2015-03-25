@@ -20,7 +20,7 @@ public interface IKnowledgeBase {
 //			OWLDescription[] testConcepts, OWLIndividual[] esempi);
 
 	/**
-	 * Restituisce i risultati della classificazione
+	 * Returns the classification results
 	 * @param ruoli
 	 * @param esempi
 	 * @return
@@ -30,20 +30,20 @@ public interface IKnowledgeBase {
 
 	//********************METODI DI ACCESSO  ALLE COMPONENTI DELL'ONTOLOGIA*******************************//
 	/**
-	 * Restituisce i ruoli presenti nell'ontologia
+	 * Returns object properties
 	 * @return
 	 */
 	public abstract OWLObjectProperty[] getRoles();
 
 	/**
-	 * Restituisce i concetti primitivi dell'ontologia
+	 * Returns primitve concepts
 	 * @return
 	 */
 	public abstract OWLClass[] getClasses();
 
 	/**
-	 * Restituisce gli individui dell'ontologia
-	 * @return gli individui di un'ontologia
+	 * Returns the individuals of an ontology
+	 * @return 
 	 */
 	public abstract OWLIndividual[] getIndividuals();
 
@@ -56,8 +56,13 @@ public interface IKnowledgeBase {
 	public abstract String getURL();
 
 	/**
+<<<<<<< HEAD:ML4SW/src/main/java/knowledgeBasesHandler/IKnowledgeBase.java
 	 * Scelta casuale di un certo numero di data properties funzionali
 	 * @param numQueryProperty, un certo numero di propriet�
+=======
+	 * Random choice of data type properties
+	 * @param numQueryProperty, 
+>>>>>>> upstream/newVersion:ML4SW/src/knowledgeBasesHandler/IKnowledgeBase.java
 	 * @return
 	 */
 	public abstract int[] getRandomProperty(int numQueryProperty);

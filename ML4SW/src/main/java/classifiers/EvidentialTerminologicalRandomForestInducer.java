@@ -57,9 +57,9 @@ public class EvidentialTerminologicalRandomForestInducer implements SupervisedLe
 			// ha splittato in istanze negative, positive e incerte per un singolo albero
 			for (int e=0; e<trainingExs.length; e++){
 
-				if (reasoner.hasType(allExamples[trainingExs[e]], testConcepts[c]))
+				if (kb.hasType(allExamples[trainingExs[e]], testConcepts[c]))
 					posExs.add(trainingExs[e]);
-				else if (reasoner.hasType(allExamples[trainingExs[e]], negTestConcepts[c]))
+				else if (kb.hasType(allExamples[trainingExs[e]], negTestConcepts[c]))
 					negExs.add(trainingExs[e]);
 				else
 					undExs.add(trainingExs[e]);
