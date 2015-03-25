@@ -128,27 +128,27 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	
 	
 	
-	private double getNodi(){
+	private double getNodes(){
 		// visita in ampiezza per effettuare il conteggio
 		
-		ArrayList<DLNode> lista = new ArrayList<DLNode>();
+		ArrayList<DLNode> list = new ArrayList<DLNode>();
 		double  num=0;
 		if(root!=null){
-			lista.add(root);
-			while(!lista.isEmpty()){
-				DLNode node= lista.get(0);
-				lista.remove(0);
+			list.add(root);
+			while(!list.isEmpty()){
+				DLNode node= list.get(0);
+				list.remove(0);
 				num++;
 				DLNode sx=null;
 				if(node.pos!=null){
 					sx= node.pos.root;
 				 	if(sx!=null)
-					 lista.add(sx);
+					 list.add(sx);
 				}
 				if(node.neg!=null){
 				 sx= node.neg.root;
 				 if(sx!=null)
-					 lista.add(sx);
+					 list.add(sx);
 				}
 					 
 			}
@@ -162,7 +162,7 @@ public class DSTDLTree extends AbstractTree implements EvidentialModel{
 	@Override
 	public double getComplexityMeasure() {
 		
-		return getNodi();
+		return getNodes();
 	}
 	
 

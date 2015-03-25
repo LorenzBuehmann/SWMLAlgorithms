@@ -216,7 +216,7 @@ public class TDTClassifier extends AbstractTDTClassifier {
 				System.out.println("Print");
 				DLTree current= stack.pop(); // leggo l'albero corrente
 
-				List<DLTree> leaves= current.getFoglie();
+				List<DLTree> leaves= current.getLeaves();
 				System.out.println("Print 2");
 				
 				   int commissionRoot= current.getCommission();
