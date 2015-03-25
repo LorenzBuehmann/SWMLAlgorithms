@@ -22,11 +22,11 @@ public class NormalSampler<T>{
 		System.out.println("n: " +n);
 		ArrayList<T> result=  new ArrayList<T>();
 		System.out.println("----"+ result.size());
-		System.out.println("Dimensione esem"+ set1.size());
+		System.out.println("Sample size: "+ set1.size());
 //		generator.nextInt(set1.size());
 		for(int i=0;i<n;i++){
 			T t = set1.get(generator.nextInt(set1.size()));
-			System.out.println("Elemento"+ t);
+			System.out.println("Element"+ t);
 			result.add(t);
 		}
 //	

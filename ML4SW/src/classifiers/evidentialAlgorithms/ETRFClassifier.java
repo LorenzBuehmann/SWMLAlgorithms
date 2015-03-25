@@ -84,20 +84,20 @@ public class ETRFClassifier {
 		
 		MassFunction bba= getBBA(functions);
 		
-		ArrayList<Integer> ipotesi= new ArrayList<Integer>();
-		ipotesi.add(+1);
+		ArrayList<Integer> hypothesis= new ArrayList<Integer>();
+		hypothesis.add(+1);
 		
-		double confirmationFunctionValuePos = bba.getConfirmationFunctionValue(ipotesi);
+		double confirmationFunctionValuePos = bba.getConfirmationFunctionValue(hypothesis);
 		//		double confirmationFunctionValuePos = bba.calcolaBeliefFunction(ipotesi);
 		// not concept
-		ArrayList<Integer> ipotesi2= new ArrayList<Integer>();
-		ipotesi2.add(-1);
-		double confirmationFunctionValueNeg = bba.getConfirmationFunctionValue(ipotesi2);
+		ArrayList<Integer> hypothesis2= new ArrayList<Integer>();
+		hypothesis2.add(-1);
+		double confirmationFunctionValueNeg = bba.getConfirmationFunctionValue(hypothesis2);
 		//		double confirmationFunctionValueNeg = bba.calcolaBeliefFunction(ipotesi2);
-		ArrayList<Integer> ipotesi3= new ArrayList<Integer>();
-		ipotesi3.add(-1);
-		ipotesi3.add(+1);
-		double confirmationFunctionValueUnc = bba.getConfirmationFunctionValue(ipotesi3);
+		ArrayList<Integer> hypothesis3= new ArrayList<Integer>();
+		hypothesis3.add(-1);
+		hypothesis3.add(+1);
+		double confirmationFunctionValueUnc = bba.getConfirmationFunctionValue(hypothesis3);
 		//		double confirmationFunctionValueUnc = bba.calcolaBeliefFunction(ipotesi3);
 
 		if((confirmationFunctionValueUnc>confirmationFunctionValuePos)&&(confirmationFunctionValueUnc>confirmationFunctionValueNeg))

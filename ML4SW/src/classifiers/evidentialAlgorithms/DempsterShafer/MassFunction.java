@@ -243,7 +243,7 @@ public class MassFunction <T extends Comparable<? super T>> {
 			// trovo gli insiemi intersecanti ipotesi1 e ipotesi2
 			for(List<T>ipotesi1: powerSet){
 				for(List<T>ipotesi2:powerSet){
-					List<T> ipotesi12=SetUtils.unisci(ipotesi1, ipotesi2);
+					List<T> ipotesi12=SetUtils.union(ipotesi1, ipotesi2);
 						// se l'unione è quella che mi aspetto e non è vuota!ipotesi12.isEmpty()&&
 						if((SetUtils.areEquals(ipotesi12, elem))){
 							SetUtils.find(ipotesi1, powerSet);

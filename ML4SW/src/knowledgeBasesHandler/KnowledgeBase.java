@@ -250,7 +250,7 @@ public class KnowledgeBase implements IKnowledgeBase {
 		for(int i=0;i<properties.length;i++){
 
 			domini[i]=new OWLIndividual[0];
-			Map<OWLIndividual, Set<OWLConstant>> prodottoCartesiano=creazioneProdottoCartesianoDominioXValore(properties[i]);
+			Map<OWLIndividual, Set<OWLConstant>> prodottoCartesiano=createCrossProductDomainPerValues(properties[i]);
 			Set<OWLIndividual> chiavi=prodottoCartesiano.keySet();
 			//			System.out.println("Dominio proprietà: "+chiavi);
 			domini[i]=chiavi.toArray(domini[i]);// ottenimento individui facenti parte del dominio
@@ -279,7 +279,7 @@ public class KnowledgeBase implements IKnowledgeBase {
 
 
 	}
-	public   Map<OWLIndividual, Set<OWLConstant>> creazioneProdottoCartesianoDominioXValore(OWLDataProperty dataProperty){
+	public   Map<OWLIndividual, Set<OWLConstant>> createCrossProductDomainPerValues(OWLDataProperty dataProperty){
 		Map<OWLIndividual, Set<OWLConstant>> asserzioni = reasoner.getDataPropertyAssertions(dataProperty);
 
 		return asserzioni;
@@ -413,7 +413,7 @@ public class KnowledgeBase implements IKnowledgeBase {
 	}
 	
 	/**
-	 * Sceglie casualmente un concetto tra quelli generati
+	 * Random choice among generated concept
 	 * @return il concetto scelto
 	 */
 	public OWLDescription getRandomConcept() {

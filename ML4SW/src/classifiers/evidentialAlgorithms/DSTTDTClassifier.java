@@ -417,11 +417,11 @@ public class DSTTDTClassifier{
 	public MassFunction<Integer> getBBA(int indTestEx, EvidentialModel tree) {
 		DSTDLTree model= (DSTDLTree) tree;
 		ArrayList<Couple<Integer, MassFunction<Integer>>> list;
-		System.out.println("Tree \n"+ model);
+//		System.out.println("Tree \n"+ model);
 		list= new  ArrayList<Couple<Integer,MassFunction<Integer>>>();
 		classifyExampleDST(list,indTestEx, model);
 		// estraggo le BBA da tutte le foglie raggiunte
-		System.out.println("Lista di foglie");
+//		System.out.println("Lista di foglie");
 		System.out.println(list);
 		MassFunction<Integer> bba=list.get(0).getSecondElement();
 
@@ -471,10 +471,6 @@ public class DSTTDTClassifier{
 
 
 		if((confirmationFunctionValueUnc>confirmationFunctionValuePos)&&(confirmationFunctionValueUnc>confirmationFunctionValueNeg))
-			
-			// commentare e decommentare qui per la classificazione con e senza forcing			
-			//results[c]=0;
-
 			if (confirmationFunctionValuePos>confirmationFunctionValueNeg)
 				results[c]=+1;
 			else if (confirmationFunctionValuePos<confirmationFunctionValueNeg)

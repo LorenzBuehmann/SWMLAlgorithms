@@ -1,10 +1,10 @@
 package utils;
 
-public class Valore<T> {
+public class Value<T> {
 	
 	private T valore;
 	boolean prior;
-	public Valore(T valore,boolean prior){
+	public Value(T valore,boolean prior){
 		
 		this.valore=valore;
 		this.prior=prior;
