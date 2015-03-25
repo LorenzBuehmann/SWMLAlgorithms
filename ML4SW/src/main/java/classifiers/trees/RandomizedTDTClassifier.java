@@ -1,21 +1,19 @@
 package classifiers.trees;
 
 import java.util.ArrayList;
-
 import java.util.Random;
-
 import java.util.Stack;
 
-import org.semanticweb.owl.model.OWLDataFactory;
-import org.semanticweb.owl.model.OWLDescription;
+import knowledgeBasesHandler.KnowledgeBase;
+
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 
 import utils.Couple;
 import utils.Npla;
-import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.AbstractTree;
 import classifiers.trees.models.DLTree;
 import evaluation.Parameters;
-import knowledgeBasesHandler.KnowledgeBase;
 
 public class RandomizedTDTClassifier extends AbstractTDTClassifier{
 //	public KnowledgeBase kb;
@@ -81,15 +79,15 @@ public class RandomizedTDTClassifier extends AbstractTDTClassifier{
 					}		
 				// else (a non-leaf node) ...
 					else{
-						OWLDescription[] cConcepts= new OWLDescription[0];
-						ArrayList<OWLDescription> cConceptsL = op.generateNewConcepts(dim, posExs, negExs);
+						OWLClassExpression[] cConcepts= new OWLClassExpression[0];
+						ArrayList<OWLClassExpression> cConceptsL = op.generateNewConcepts(dim, posExs, negExs);
 						System.out.println("Size: "+cConceptsL);
 						cConceptsL= getRandomSelection(cConceptsL); // random selection of feature set
 					
 						cConcepts = cConceptsL.toArray(cConcepts);
 
 						// select node concept
-						OWLDescription newRootConcept = Parameters.CCP?(selectBestConceptCCP(cConcepts, posExs, negExs, undExs, prPos, prNeg, truePos, trueNeg)):(selectBestConcept(cConcepts, posExs, negExs, undExs, prPos, prNeg));;
+						OWLClassExpression newRootConcept = Parameters.CCP?(selectBestConceptCCP(cConcepts, posExs, negExs, undExs, prPos, prNeg, truePos, trueNeg)):(selectBestConcept(cConcepts, posExs, negExs, undExs, prPos, prNeg));;
 
 						ArrayList<Integer> posExsT = new ArrayList<Integer>();
 						ArrayList<Integer> negExsT = new ArrayList<Integer>();
@@ -130,10 +128,10 @@ public class RandomizedTDTClassifier extends AbstractTDTClassifier{
 
 		
 
-private ArrayList<OWLDescription> getRandomSelection(ArrayList<OWLDescription> refinement) {
+private ArrayList<OWLClassExpression> getRandomSelection(ArrayList<OWLClassExpression> refinement) {
 	System.out.println("RANDOM SELECTION ");
 	Random generator= new Random(1);
-	ArrayList<OWLDescription> subset=new ArrayList<OWLDescription>();
+	ArrayList<OWLClassExpression> subset=new ArrayList<OWLClassExpression>();
 	final int SUBSET_DIMENSION=(int) Math.sqrt(refinement.size());
 	for (int i=0;i<SUBSET_DIMENSION;i++){
 		int index=generator.nextInt(refinement.size());
@@ -155,7 +153,7 @@ private ArrayList<OWLDescription> getRandomSelection(ArrayList<OWLDescription> r
 		while(!stack.isEmpty() && !stop){
 			DLTree currentTree= stack.pop();
 			
-			OWLDescription rootClass = currentTree.getRoot();
+			OWLClassExpression rootClass = currentTree.getRoot();
 //			System.out.println("Root class: "+ rootClass);
 			if (rootClass.equals(dataFactory.getOWLThing())){
 				stop=true;

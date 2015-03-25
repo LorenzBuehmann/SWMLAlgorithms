@@ -1,17 +1,18 @@
 package evaluation;
 
 import java.util.HashSet;
-
 import java.util.Set;
 
-import org.semanticweb.owl.model.OWLClass;
-import org.semanticweb.owl.model.OWLDataFactory;
-import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLIndividual;
-import org.semanticweb.owl.model.OWLObjectProperty;
-import utils.Couple;
-
 import knowledgeBasesHandler.KnowledgeBase;
+
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+
+import utils.Couple;
 /**
  * A snippet for the problem of affiliation for AIFB ontology
  * @author Utente
@@ -26,30 +27,30 @@ public class AIFBConceptGenerator extends ConceptGenerator {
 	}
 
 
-	public  Couple<OWLDescription[],OWLDescription[]> generateQueryConcept(){
+	public  Couple<OWLClassExpression[],OWLClassExpression[]> generateQueryConcept(){
 
 
 		OWLClass owlClass = kb.getClasses()[40]; // research group
 		OWLClass owlClass2 = kb.getClasses()[31]; // person
 		OWLObjectProperty prop= kb.getRoles()[95];
-		// considerare la proprietà no. 95
+		// considerare la proprietï¿½ no. 95
 
-		System.out.println(owlClass2 +" "+reasoner.getIndividuals(owlClass2, false).size());
-		examples= new OWLIndividual[reasoner.getIndividuals(owlClass2, false).size()];
-		examples=reasoner.getIndividuals(owlClass2, false).toArray(examples);
+		System.out.println(owlClass2 +" "+reasoner.getInstances(owlClass2, false).size());
+		examples= new OWLIndividual[reasoner.getInstances(owlClass2, false).size()];
+		examples=reasoner.getInstances(owlClass2, false).toArray(examples);
 
 		// per ogni research group generare il concetto \exists R 
 
-		Set<OWLIndividual> researchGroup = reasoner.getIndividuals(owlClass, false); // retrieval of research group
-		OWLDescription[] queries= new OWLDescription[researchGroup.size()];
-		OWLDescription[] negqueries= new OWLDescription[researchGroup.size()];
+		Set<OWLNamedIndividual> researchGroup = reasoner.getInstances(owlClass, false).getFlattened(); // retrieval of research group
+		OWLClassExpression[] queries= new OWLClassExpression[researchGroup.size()];
+		OWLClassExpression[] negqueries= new OWLClassExpression[researchGroup.size()];
 		OWLDataFactory dataFactory2 = kb.getDataFactory();
 		int i=0;
 
 		// genero  concetto \exists R.{owlIndividual}
 		for (OWLIndividual owlIndividual : researchGroup) {
 
-			queries[i]= dataFactory2.getOWLObjectSomeRestriction(prop, dataFactory2.getOWLObjectOneOf(owlIndividual));
+			queries[i]= dataFactory2.getOWLObjectSomeValuesFrom(prop, dataFactory2.getOWLObjectOneOf(owlIndividual));
 			System.out.println("Queries: "+i+") "+queries[i]);
 			i++;
 		}
@@ -71,7 +72,7 @@ public class AIFBConceptGenerator extends ConceptGenerator {
 
 			}
 
-			negqueries[j]= dataFactory2.getOWLObjectSomeRestriction(prop, dataFactory2.getOWLObjectOneOf(subset));
+			negqueries[j]= dataFactory2.getOWLObjectSomeValuesFrom(prop, dataFactory2.getOWLObjectOneOf(subset));
 			System.out.println("Neg Queries: "+j+") "+negqueries[j]);
 			
 			
@@ -86,7 +87,7 @@ public class AIFBConceptGenerator extends ConceptGenerator {
 //			
 //		}
 		
-		Couple<OWLDescription[], OWLDescription[]> couple = new Couple <OWLDescription[], OWLDescription[]>();
+		Couple<OWLClassExpression[], OWLClassExpression[]> couple = new Couple <OWLClassExpression[], OWLClassExpression[]>();
 		couple.setFirstElement(queries);
 		couple.setSecondElement(negqueries);
 		return couple;

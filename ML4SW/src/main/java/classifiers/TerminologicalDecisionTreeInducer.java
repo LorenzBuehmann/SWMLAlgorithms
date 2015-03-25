@@ -1,8 +1,5 @@
 package classifiers;
 
-import org.semanticweb.owl.model.OWLDescription;
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,19 +8,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.mindswap.pellet.owlapi.Reasoner;
-import org.semanticweb.owl.model.OWLIndividual;
-
-import utils.Generator;
-
 import knowledgeBasesHandler.KnowledgeBase;
 
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLIndividual;
 
-import classifiers.refinementOperator.NonRandomRefinementOperator;
-import classifiers.refinementOperator.NonRecursiveDownwardRefinementOperator;
-import classifiers.refinementOperator.RefinementOperator;
+import utils.Generator;
 import classifiers.trees.TDTClassifier;
 import classifiers.trees.models.DLTree;
+
+import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
+
 import evaluation.Parameters;
 import evaluation.PruningType;
 /**
@@ -57,12 +52,12 @@ public class TerminologicalDecisionTreeInducer implements SupervisedLearnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see classifiers.SupervisedLearnable#training(java.lang.Integer[], org.semanticweb.owl.model.OWLDescription[], org.semanticweb.owl.model.OWLDescription[])
+	 * @see classifiers.SupervisedLearnable#training(java.lang.Integer[], org.semanticweb.owl.model.OWLClassExpression[], org.semanticweb.owl.model.OWLClassExpression[])
 	 */
 	@Override
-	public void training(int[][] results,Integer[] trainingExs, OWLDescription[] testConcepts, OWLDescription[] negTestConcepts){
+	public void training(int[][] results,Integer[] trainingExs, OWLClassExpression[] testConcepts, OWLClassExpression[] negTestConcepts){
         RefinementOperator op=new RefinementOperator(kb);
-		Reasoner reasoner = kb.getReasoner();
+		PelletReasoner reasoner = kb.getReasoner();
 		OWLIndividual[] allExamples= kb.getIndividuals();
 		//		DLTree2[] forests = new DLTree2[testConcepts.length];
 		HashSet<Integer> trainingExsSet= new HashSet<Integer>(Arrays.asList(trainingExs));
@@ -155,10 +150,10 @@ public class TerminologicalDecisionTreeInducer implements SupervisedLearnable {
 
 
 	/* (non-Javadoc)
-	 * @see classifiers.SupervisedLearnable#test(int, java.lang.Integer[], org.semanticweb.owl.model.OWLDescription[])
+	 * @see classifiers.SupervisedLearnable#test(int, java.lang.Integer[], org.semanticweb.owl.model.OWLClassExpression[])
 	 */
 	@Override
-	public int[][] test(int f,Integer[] testExs,OWLDescription[] testConcepts) {
+	public int[][] test(int f,Integer[] testExs,OWLClassExpression[] testConcepts) {
 		int[][] labels= new int[testExs.length][nOfConcepts]; // classifier answers for each example and for each concept
 		for (int te=0; te < testExs.length; te++ ) { 
 

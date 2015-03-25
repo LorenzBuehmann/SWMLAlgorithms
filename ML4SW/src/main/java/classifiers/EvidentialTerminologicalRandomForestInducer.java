@@ -2,17 +2,16 @@ package classifiers;
 
 import java.util.ArrayList;
 
-import org.mindswap.pellet.owlapi.Reasoner;
-import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLIndividual;
-
 import knowledgeBasesHandler.KnowledgeBase;
 
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLIndividual;
 
 import classifiers.ensemble.Ensemble;
-
 import classifiers.evidentialAlgorithms.ETRFClassifier;
 import classifiers.evidentialAlgorithms.models.DSTDLTree;
+
+import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
 
 import evaluation.Parameters;
 
@@ -40,10 +39,10 @@ public class EvidentialTerminologicalRandomForestInducer implements SupervisedLe
 	 * @see classifiers.SupervisedLearnable#training(java.lang.Integer[], org.semanticweb.owl.model.OWLDescription[], org.semanticweb.owl.model.OWLDescription[])
 	 */
 	@Override
-	public void training(int[][] results, Integer[] trainingExs, OWLDescription[] testConcepts, OWLDescription[] negTestConcepts){
+	public void training(int[][] results, Integer[] trainingExs, OWLClassExpression[] testConcepts, OWLClassExpression[] negTestConcepts){
 
 		//		DLTree2[] forests = new DLTree2[testConcepts.length];
-		Reasoner reasoner = kb.getReasoner();
+		PelletReasoner reasoner = kb.getReasoner();
 		OWLIndividual[] allExamples= kb.getIndividuals();
 		//		ArrayList<Triple<Integer, Integer, Integer>> testSetComposition= new ArrayList<Triple<Integer, Integer, Integer>>();
 		ETRFClassifier cl= new ETRFClassifier(kb);
@@ -101,7 +100,7 @@ public class EvidentialTerminologicalRandomForestInducer implements SupervisedLe
 	 * @see classifiers.SupervisedLearnable#test(int, java.lang.Integer[], org.semanticweb.owl.model.OWLDescription[])
 	 */
 	@Override
-	public int[][] test(int f,Integer[] testExs,OWLDescription[] testConcepts) {
+	public int[][] test(int f,Integer[] testExs,OWLClassExpression[] testConcepts) {
 		int[][] labels= new int[testExs.length][nOfConcepts]; // classifier answers for each example and for each concept
 		for (int te=0; te < testExs.length; te++ ) { 
 

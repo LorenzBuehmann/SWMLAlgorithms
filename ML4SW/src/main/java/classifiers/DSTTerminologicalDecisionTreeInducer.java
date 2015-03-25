@@ -1,20 +1,18 @@
 package classifiers;
 
-import org.semanticweb.owl.model.OWLDescription;
-
-
 import java.lang.reflect.InvocationTargetException;
-	import java.util.ArrayList;
+import java.util.ArrayList;
 
-	import org.mindswap.pellet.owlapi.Reasoner;
-	import org.semanticweb.owl.model.OWLIndividual;
+import knowledgeBasesHandler.KnowledgeBase;
 
-	import knowledgeBasesHandler.KnowledgeBase;
-
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLIndividual;
 
 import classifiers.evidentialAlgorithms.DSTTDTClassifier;
 import classifiers.evidentialAlgorithms.models.DSTDLTree;
-import classifiers.refinementOperator.RefinementOperator;
+
+import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
+
 import evaluation.Parameters;
 /**
  * Wrapper for DSTTDTClassifier
@@ -36,10 +34,10 @@ import evaluation.Parameters;
 		}
 
 		/* (non-Javadoc)
-		 * @see classifiers.SupervisedLearnable#training(java.lang.Integer[], org.semanticweb.owl.model.OWLDescription[], org.semanticweb.owl.model.OWLDescription[])
+		 * @see classifiers.SupervisedLearnable#training(java.lang.Integer[], org.semanticweb.owl.model.OWLClassExpression[], org.semanticweb.owl.model.OWLClassExpression[])
 		 */
 		@Override
-		public void training(int[][] results, Integer[] trainingExs, OWLDescription[] testConcepts, OWLDescription[] negTestConcepts){
+		public void training(int[][] results, Integer[] trainingExs, OWLClassExpression[] testConcepts, OWLClassExpression[] negTestConcepts){
 			RefinementOperator  op = null;
 			try {
 				op=  (RefinementOperator)(ClassLoader.getSystemClassLoader().loadClass(Parameters.refinementOperator)).getConstructor(KnowledgeBase.class).newInstance(kb);
@@ -66,7 +64,7 @@ import evaluation.Parameters;
 				e1.printStackTrace();
 			}
 			//		DLTree2[] forests = new DLTree2[testConcepts.length];
-			Reasoner reasoner = kb.getReasoner();
+			PelletReasoner reasoner = kb.getReasoner();
 			OWLIndividual[] allExamples= kb.getIndividuals();
 			//		ArrayList<Triple<Integer, Integer, Integer>> testSetComposition= new ArrayList<Triple<Integer, Integer, Integer>>();
 			for (int c=0; c<testConcepts.length; c++) {
@@ -116,10 +114,10 @@ import evaluation.Parameters;
 
 
 		/* (non-Javadoc)
-		 * @see classifiers.SupervisedLearnable#test(int, java.lang.Integer[], org.semanticweb.owl.model.OWLDescription[])
+		 * @see classifiers.SupervisedLearnable#test(int, java.lang.Integer[], org.semanticweb.owl.model.OWLClassExpression[])
 		 */
 		@Override
-		public int[][] test(int f,Integer[] testExs,OWLDescription[] testConcepts) {
+		public int[][] test(int f,Integer[] testExs,OWLClassExpression[] testConcepts) {
 			int[][] labels= new int[testExs.length][nOfConcepts]; // classifier answers for each example and for each concept
 			for (int te=0; te < testExs.length; te++ ) { 
 

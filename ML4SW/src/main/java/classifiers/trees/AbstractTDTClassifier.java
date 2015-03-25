@@ -2,19 +2,14 @@ package classifiers.trees;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import knowledgeBasesHandler.KnowledgeBase;
 
-import org.semanticweb.owl.inference.OWLReasonerException;
-import org.semanticweb.owl.model.OWLDataFactory;
-import org.semanticweb.owl.model.OWLDescription;
-import org.semanticweb.owl.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 
-import classifiers.refinementOperator.RefinementOperator;
 import classifiers.trees.models.AbstractTree;
 import classifiers.trees.models.DLTree;
 import evaluation.Parameters;
@@ -34,7 +29,7 @@ public abstract class AbstractTDTClassifier {
 
 
 
-	public	void classifyExamples(int indTestEx, DLTree[] trees, int[] results, OWLDescription[] testConcepts, int...rclass) {
+	public	void classifyExamples(int indTestEx, DLTree[] trees, int[] results, OWLClassExpression[] testConcepts, int...rclass) {
 
 		int length = testConcepts!=null?testConcepts.length:1;
 		for (int c=0; c < length; c++) {
@@ -77,7 +72,7 @@ public abstract class AbstractTDTClassifier {
 			while(!stack.isEmpty() && !stop){
 				DLTree currentTree= stack.pop();
 
-				OWLDescription rootClass = currentTree.getRoot();
+				OWLClassExpression rootClass = currentTree.getRoot();
 				//			System.out.println("Root class: "+ rootClass);
 				if (rootClass.equals(dataFactory.getOWLThing())){
 					stop=true;
@@ -103,7 +98,7 @@ public abstract class AbstractTDTClassifier {
 			while(!stack.isEmpty() && !stop){
 				DLTree currentTree= stack.pop();
 
-				OWLDescription rootClass = currentTree.getRoot();
+				OWLClassExpression rootClass = currentTree.getRoot();
 				//			System.out.println("Root class: "+ rootClass);
 				if (rootClass.equals(dataFactory.getOWLThing())){
 					stop=true;
@@ -137,7 +132,7 @@ public int classifyExample(List<Integer> list, int indTestEx, DLTree tree) {
 	while(!stack.isEmpty() && !stop){
 		DLTree currentTree= stack.pop();
 
-		OWLDescription rootClass = currentTree.getRoot();
+		OWLClassExpression rootClass = currentTree.getRoot();
 		//			System.out.println("Root class: "+ rootClass);
 		if (rootClass.equals(dataFactory.getOWLThing())){
 			//				stop=true;
@@ -176,7 +171,7 @@ public int classifyExample(List<Integer> list, int indTestEx, DLTree tree) {
 
 
 
-protected OWLDescription selectBestConcept(OWLDescription[] concepts, ArrayList<Integer> posExs, ArrayList<Integer> negExs,
+protected OWLClassExpression selectBestConcept(OWLClassExpression[] concepts, ArrayList<Integer> posExs, ArrayList<Integer> negExs,
 		ArrayList<Integer> undExs, double prPos, double prNeg) {
 
 	int[] counts;
@@ -212,7 +207,7 @@ protected OWLDescription selectBestConcept(OWLDescription[] concepts, ArrayList<
 	return concepts[bestConceptIndex];
 }
 
-protected OWLDescription selectBestConceptCCP(OWLDescription[] concepts, ArrayList<Integer> posExs, ArrayList<Integer> negExs,
+protected OWLClassExpression selectBestConceptCCP(OWLClassExpression[] concepts, ArrayList<Integer> posExs, ArrayList<Integer> negExs,
 		ArrayList<Integer> undExs, double prPos, double prNeg, ArrayList<Integer> truePosExs, ArrayList<Integer> trueNegExs) {
 
 	int[] counts;
@@ -307,7 +302,7 @@ public AbstractTDTClassifier() {
 	super();
 }
 
-private int[] getSplitCounts(OWLDescription concept, ArrayList<Integer> posExs, ArrayList<Integer> negExs,
+private int[] getSplitCounts(OWLClassExpression concept, ArrayList<Integer> posExs, ArrayList<Integer> negExs,
 		ArrayList<Integer> undExs) {
 	
 	int[] counts = new int[9];
